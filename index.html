@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Villain Host - NGL Spammer</title>
   <style>
     body {
@@ -37,6 +37,22 @@
       75% { text-shadow: -1px 0 purple; }
       100% { text-shadow: 0 0 white; }
     }
+    #logBox {
+      background-color: #111;
+      color: #0f0;
+      margin-top: 20px;
+      padding: 15px;
+      width: 90%;
+      max-height: 300px;
+      overflow-y: auto;
+      text-align: left;
+      border-radius: 10px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .done {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -46,7 +62,7 @@
 
   <input type="text" id="username" placeholder="Masukkan username NGL (tanpa @)">
   <textarea id="message" rows="4" placeholder="Tulis pesan anonim yang ingin dikirim..."></textarea>
-  <input type="number" id="jumlah" placeholder="Berapa kali kirim? (1–20)" min="1" max="20">
+  <input type="number" id="jumlah" placeholder="Berapa kali kirim? (1–1000)" min="1" max="20">
   <select id="delay">
     <option value="500">Setiap 0.5 detik</option>
     <option value="1000" selected>Setiap 1 detik</option>
@@ -58,6 +74,8 @@
   <button onclick="kirimPesan()">Mulai Kirim</button>
   <p id="status"></p>
 
+  <div id="logBox"></div>
+
   <script>
     async function kirimPesan() {
       const username = document.getElementById('username').value.trim();
@@ -65,13 +83,15 @@
       const jumlah = parseInt(document.getElementById('jumlah').value);
       const delay = parseInt(document.getElementById('delay').value);
       const status = document.getElementById('status');
+      const logBox = document.getElementById('logBox');
 
-      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 20) {
+      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 1000) {
         status.textContent = "Harap isi semua kolom dengan benar!";
         return;
       }
 
       status.textContent = "Mengirim pesan...";
+      logBox.innerHTML = "";
 
       for (let i = 1; i <= jumlah; i++) {
         try {
@@ -81,7 +101,11 @@
             body: JSON.stringify({ username, message: pesan })
           });
 
-          status.textContent = `Terkirim ${i}/${jumlah}...`;
+          const logLine = document.createElement('div');
+          logLine.textContent = `pesan ke ${i} berhasil terkirim by villain`;
+          logBox.appendChild(logLine);
+          logBox.scrollTop = logBox.scrollHeight;
+
           await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
           status.textContent = `Gagal mengirim pesan ke @${username}`;
@@ -89,7 +113,11 @@
         }
       }
 
-      status.textContent = `Selesai! ${jumlah} pesan berhasil dikirim ke @${username}`;
+      const doneLine = document.createElement('div');
+      doneLine.innerHTML = `<span class="done">done yang ke ${jumlah} sudah berhasil terkirim ya 😋</span>`;
+      logBox.appendChild(doneLine);
+      logBox.scrollTop = logBox.scrollHeight;
+      status.textContent = "Selesai!";
     }
   </script>
 </body>
