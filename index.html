@@ -75,16 +75,10 @@
 
       for (let i = 1; i <= jumlah; i++) {
         try {
-          await fetch('https://ngl.link/api/submit', {
+          await fetch('/api/send', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-              username: username,
-              question: pesan,
-              deviceId: 'xxx' + Math.random().toString().slice(2, 12)
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, message: pesan })
           });
 
           status.textContent = `Terkirim ${i}/${jumlah}...`;
