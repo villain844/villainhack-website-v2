@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>NGL Spammer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Villain Hack</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .glitch {
+      font-size: 32px;
+      font-weight: bold;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red; }
+      20% { text-shadow: -2px 0 blue; }
+      40% { text-shadow: 2px 0 green; }
+      60% { text-shadow: -2px 0 purple; }
+      80% { text-shadow: 2px 0 orange; }
+      100% { text-shadow: 0 0 white; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Kirim Pesan Anonim ke NGL</h1>
-    <form id="nglForm">
-        <label for="username">Nama Pengguna NGL:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="message">Pesan:</label>
-        <textarea id="message" name="message" required></textarea><br><br>
-        <button type="submit">Kirim</button>
-    </form>
-    <p id="response"></p>
-
-    <script>
-        document.getElementById('nglForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const message = document.getElementById('message').value;
-
-            const response = await fetch('/api/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, message })
-            });
-
-            const result = await response.json();
-            document.getElementById('response').textContent = result.message;
-        });
-    </script>
+  <h1>SELAMAT DATANG DI WEB</h1>
+  <div class="glitch">𓆩⟬villain host⟭𓆪</div>
+  <p>Website ini sedang dalam pengembangan.</p>
 </body>
 </html>
