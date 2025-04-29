@@ -1,12 +1,12 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Metode tidak diizinkan' });
+    return res.status(405).json({ success: false, message: 'Metode tidak diizinkan' });
   }
 
   const { username, message } = req.body;
 
   if (!username || !message) {
-    return res.status(400).json({ error: 'Username dan pesan harus diisi' });
+    return res.status(400).json({ success: false, message: 'Username dan pesan tidak boleh kosong' });
   }
 
   try {
@@ -29,9 +29,9 @@ export default async function handler(req, res) {
       throw new Error('Gagal mengirim ke ngl.link');
     }
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, message: 'Berhasil terkirim' });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengirim pesan' });
   }
 }
 
