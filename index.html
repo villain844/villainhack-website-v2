@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TikTok Downloader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center px-4">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
+    <h1 class="text-xl font-bold mb-2">SELAMAT DATANG DI WEB</h1>
+    <h2 class="text-2xl font-bold mb-4 text-purple-400">𓆩⟬villain host⟭𓆪</h2>
+    
+    <input type="text" id="tiktokLink" placeholder="Tempel link TikTok..." class="w-full p-3 mb-4 rounded-lg text-black" />
+    <button onclick="downloadVideo()" class="bg-purple-600 hover:bg-purple-700 w-full p-3 rounded-lg font-bold">Download</button>
+    <div id="result" class="mt-4 text-center text-sm"></div>
+  </div>
+
+  <script>
+    async function downloadVideo() {
+      const link = document.getElementById("tiktokLink").value.trim();
+      const result = document.getElementById("result");
+
+      if (!link.includes("tiktok.com")) {
+        result.innerHTML = "<p class='text-red-500'>Link TikTok tidak valid.</p>";
+        return;
+      }
+
+      result.innerHTML = "<p class='text-yellow-400'>Memproses link...</p>";
+
+      try {
+        const res = await fetch("/api/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: link })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          result.innerHTML = `<a href="${data.downloadUrl}" target="_blank" class="text-green-400 underline">Klik di sini untuk mengunduh video</a>`;
+        } else {
+          result.innerHTML = "<p class='text-red-500'>Gagal mendapatkan video.</p>";
+        }
+      } catch (err) {
+        result.innerHTML = "<p class='text-red-500'>Terjadi kesalahan saat mengambil video.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
