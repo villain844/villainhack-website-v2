@@ -1,21 +1,45 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Metode tidak diizinkan' });
+  }
 
   const { username, message } = req.body;
 
+  if (!username || !message) {
+    return res.status(400).json({ error: 'Username dan pesan harus diisi' });
+  }
+
   try {
-    const response = await fetch('https://ngl.link/api/submit', {
+    const payload = {
+      question: message,
+      deviceId: generateId(),
+      gameSlug: '',
+      language: 'id',
+    };
+
+    const response = await fetch(`https://ngl.link/api/submit?username=${username}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        username,
-        question: message,
-        deviceId: 'xxx' + Math.random().toString().slice(2, 12),
-      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
 
-    res.status(200).json({ message: 'Berhasil dikirim!' });
-  } catch (err) {
-    res.status(500).json({ message: 'Gagal mengirim!' });
+    if (!response.ok) {
+      throw new Error('Gagal mengirim ke ngl.link');
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
+}
+
+function generateId() {
+  let id = '';
+  const chars = 'abcdef0123456789';
+  for (let i = 0; i < 16; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
 }
