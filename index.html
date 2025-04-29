@@ -12,18 +12,22 @@
       text-align: center;
       padding: 30px;
     }
-    input, textarea, select, button {
+    input, textarea, button {
       margin: 10px;
       padding: 10px;
       width: 80%;
       font-size: 16px;
-      border: none;
+      border: 2px solid #0f0;
+      background-color: #000;
+      color: #0f0;
       border-radius: 5px;
+      box-shadow: 0 0 8px #0f0;
     }
     button {
       background-color: #0f0;
       color: #000;
       font-weight: bold;
+      box-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
     }
     .glitch {
       font-size: 30px;
@@ -46,7 +50,9 @@
       max-height: 300px;
       overflow-y: auto;
       text-align: left;
+      border: 2px solid #0f0;
       border-radius: 10px;
+      box-shadow: 0 0 10px #0f0;
       margin-left: auto;
       margin-right: auto;
     }
@@ -60,16 +66,10 @@
   <div class="glitch">𓆩⟬villain host⟭𓆪</div>
   <h2>NGL Spammer Anonim</h2>
 
-  <input type="text" id="username" placeholder="Masukkan username NGL (tanpa @)">
-  <textarea id="message" rows="4" placeholder="Tulis pesan anonim yang ingin dikirim..."></textarea>
-  <input type="number" id="jumlah" placeholder="Berapa kali kirim? (1–1000)" min="1" max="20">
-  <select id="delay">
-    <option value="500">Setiap 0.5 detik</option>
-    <option value="1000" selected>Setiap 1 detik</option>
-    <option value="2000">Setiap 2 detik</option>
-    <option value="3000">Setiap 3 detik</option>
-    <option value="5000">Setiap 5 detik</option>
-  </select>
+  <input type="text" id="username" placeholder="Username NGL (tanpa @)">
+  <textarea id="message" rows="4" placeholder="Tulis pesan anonim..."></textarea>
+  <input type="number" id="jumlah" placeholder="Jumlah kirim? (1–20)" min="1" max="20">
+  <input type="number" id="delay" placeholder="Delay antar pesan (1–60 detik)" min="1" max="60">
   <br>
   <button onclick="kirimPesan()">Mulai Kirim</button>
   <p id="status"></p>
@@ -81,14 +81,16 @@
       const username = document.getElementById('username').value.trim();
       const pesan = document.getElementById('message').value.trim();
       const jumlah = parseInt(document.getElementById('jumlah').value);
-      const delay = parseInt(document.getElementById('delay').value);
+      const delayDetik = parseInt(document.getElementById('delay').value);
       const status = document.getElementById('status');
       const logBox = document.getElementById('logBox');
 
-      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 1000) {
+      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 20 || isNaN(delayDetik) || delayDetik < 1 || delayDetik > 60) {
         status.textContent = "Harap isi semua kolom dengan benar!";
         return;
       }
+
+      const delay = delayDetik * 1000; // ubah ke milidetik
 
       status.textContent = "Mengirim pesan...";
       logBox.innerHTML = "";
