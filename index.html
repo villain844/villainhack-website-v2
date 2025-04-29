@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>NGL Spammer</title>
+</head>
+<body>
+    <h1>Kirim Pesan Anonim ke NGL</h1>
+    <form id="nglForm">
+        <label for="username">Nama Pengguna NGL:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="message">Pesan:</label>
+        <textarea id="message" name="message" required></textarea><br><br>
+        <button type="submit">Kirim</button>
+    </form>
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('nglForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const message = document.getElementById('message').value;
+
+            const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, message })
+            });
+
+            const result = await response.json();
+            document.getElementById('response').textContent = result.message;
+        });
+    </script>
+</body>
+</html>
