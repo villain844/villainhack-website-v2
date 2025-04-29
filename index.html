@@ -2,37 +2,101 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Villain Hack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villain Host - NGL Spammer</title>
   <style>
     body {
       background-color: #000;
       color: #0f0;
       font-family: monospace;
       text-align: center;
-      padding: 50px;
+      padding: 30px;
     }
-    h1 {
-      font-size: 24px;
+    input, textarea, select, button {
+      margin: 10px;
+      padding: 10px;
+      width: 80%;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
     }
     .glitch {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: bold;
       animation: glitch 1s infinite;
     }
     @keyframes glitch {
-      0% { text-shadow: 2px 0 red; }
-      20% { text-shadow: -2px 0 blue; }
-      40% { text-shadow: 2px 0 green; }
-      60% { text-shadow: -2px 0 purple; }
-      80% { text-shadow: 2px 0 orange; }
+      0% { text-shadow: 1px 0 red; }
+      25% { text-shadow: -1px 0 blue; }
+      50% { text-shadow: 1px 0 green; }
+      75% { text-shadow: -1px 0 purple; }
       100% { text-shadow: 0 0 white; }
     }
   </style>
 </head>
 <body>
-  <h1>SELAMAT DATANG DI WEB</h1>
+  <h1>SELAMAT DATANG DI</h1>
   <div class="glitch">𓆩⟬villain host⟭𓆪</div>
-  <p>Website ini sedang dalam pengembangan.</p>
+  <h2>NGL Spammer Anonim</h2>
+
+  <input type="text" id="username" placeholder="Masukkan username NGL (tanpa @)">
+  <textarea id="message" rows="4" placeholder="Tulis pesan anonim yang ingin dikirim..."></textarea>
+  <input type="number" id="jumlah" placeholder="Berapa kali kirim? (1–20)" min="1" max="20">
+  <select id="delay">
+    <option value="500">Setiap 0.5 detik</option>
+    <option value="1000" selected>Setiap 1 detik</option>
+    <option value="2000">Setiap 2 detik</option>
+    <option value="3000">Setiap 3 detik</option>
+    <option value="5000">Setiap 5 detik</option>
+  </select>
+  <br>
+  <button onclick="kirimPesan()">Mulai Kirim</button>
+  <p id="status"></p>
+
+  <script>
+    async function kirimPesan() {
+      const username = document.getElementById('username').value.trim();
+      const pesan = document.getElementById('message').value.trim();
+      const jumlah = parseInt(document.getElementById('jumlah').value);
+      const delay = parseInt(document.getElementById('delay').value);
+      const status = document.getElementById('status');
+
+      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 20) {
+        status.textContent = "Harap isi semua kolom dengan benar!";
+        return;
+      }
+
+      status.textContent = "Mengirim pesan...";
+
+      for (let i = 1; i <= jumlah; i++) {
+        try {
+          await fetch('https://ngl.link/api/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+              username: username,
+              question: pesan,
+              deviceId: 'xxx' + Math.random().toString().slice(2, 12)
+            })
+          });
+
+          status.textContent = `Terkirim ${i}/${jumlah}...`;
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } catch (err) {
+          status.textContent = `Gagal mengirim pesan ke @${username}`;
+          return;
+        }
+      }
+
+      status.textContent = `Selesai! ${jumlah} pesan berhasil dikirim ke @${username}`;
+    }
+  </script>
 </body>
 </html>
