@@ -2,69 +2,59 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>𓆩villain host𓆪 NGL Spammer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spam NGL</title>
   <style>
     body {
-      margin: 0;
       background: url('https://files.catbox.moe/r7x7ab.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: sans-serif;
       color: white;
       text-align: center;
     }
-    .container {
-      margin-top: 50px;
-    }
-    input, textarea {
-      margin: 10px;
+    input, button {
       padding: 10px;
-      width: 80%;
+      margin: 10px;
       border: 2px solid red;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-    }
-    button {
-      padding: 10px 20px;
-      background: red;
-      border: none;
+      background: black;
       color: white;
       font-weight: bold;
-      cursor: pointer;
-    }
-    #notifikasi {
-      position: fixed;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: crimson;
-      padding: 10px 20px;
-      color: white;
-      border-radius: 8px;
-      transition: top 0.5s ease;
-      z-index: 9999;
     }
     #log {
-      width: 90%;
-      margin: 20px auto;
-      background: rgba(0, 0, 0, 0.6);
-      border-left: 5px solid red;
+      border: 2px solid red;
+      margin-top: 20px;
       padding: 10px;
-      max-height: 300px;
-      overflow-y: auto;
+      background-color: rgba(0,0,0,0.6);
       text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .notif {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: top 0.5s ease;
+    }
+    .notif.show {
+      top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>𓆩villain host𓆪 NGL Spammer</h1>
-    <input type="text" id="username" placeholder="username ngl" /><br />
-    <textarea id="pesan" placeholder="isi pesan..."></textarea><br />
-    <button onclick="mulaiSpam()">KIRIM SPAM</button>
+  <h1>SELAMAT DATANG DI 𓆩villain host𓆪</h1>
+  <input type="text" id="username" placeholder="username ngl">
+  <textarea id="message" placeholder="pesan spam"></textarea>
+  <input type="number" id="jumlah" placeholder="jumlah pesan">
+  <button onclick="kirim()">kirim spam</button>
 
-    <div id="log"></div>
-    <div id="notifikasi">Notifikasi</div>
-  </div>
+  <div id="notif" class="notif">Notifikasi</div>
+  <div id="log"></div>
 
   <script src="send.js"></script>
 </body>
