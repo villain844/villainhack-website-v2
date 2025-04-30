@@ -1,128 +1,153 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>𓆩villain host𓆪 Spam</title>
+  <meta charset="UTF-8">
+  <title>𓆩villain host𓆪 - NGL Spammer</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
       background: url('https://files.catbox.moe/r7x7ab.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: #fff;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      color: white;
       text-align: center;
     }
 
-    h1 {
-      margin-top: 30px;
-      text-shadow: 0 0 10px red;
-      color: #ff4d4d;
+    .container {
+      margin-top: 60px;
     }
 
-    input, textarea, button {
-      margin: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      width: 90%;
-      max-width: 300px;
-    }
-
-    .log-box {
+    input, textarea {
+      background: rgba(255, 255, 255, 0.1);
       border: 2px solid red;
       border-radius: 10px;
-      margin: 20px auto;
       padding: 10px;
-      max-width: 90%;
-      background: rgba(0,0,0,0.5);
-      text-align: left;
-      color: #fff;
-      font-size: 14px;
-    }
-
-    .bold {
-      font-weight: bold;
+      color: white;
+      margin-bottom: 10px;
+      width: 80%;
+      max-width: 400px;
     }
 
     button {
-      background-color: #b30000;
-      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      background: red;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      box-shadow: 0 0 15px red;
       cursor: pointer;
     }
 
-    .notif {
+    #notif {
       position: fixed;
-      top: -60px;
+      top: -50px;
       left: 50%;
       transform: translateX(-50%);
-      background: red;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ff0000;
-      z-index: 9999;
+      background: rgba(255, 0, 0, 0.9);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: bold;
       transition: top 0.5s ease;
+      z-index: 999;
     }
 
-    .notif.show {
-      top: 30px;
+    #log {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .log-entry {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid red;
+      padding: 6px 12px;
+      margin: 4px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    strong {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>𓆩villain host𓆪 NGL SPAM</h1>
+  <div id="notif"></div>
+  <div class="container">
+    <h1>𓆩villain host𓆪 - NGL Spammer</h1>
+    <input id="username" placeholder="username ngl tanpa @" /><br>
+    <textarea id="message" placeholder="pesan yang ingin dikirim"></textarea><br>
+    <input id="jumlah" type="number" placeholder="jumlah pesan" /><br>
+    <input id="delay" type="number" placeholder="delay (1-60 dtk)" /><br>
+    <button onclick="kirim()">Mulai Spam</button>
 
-  <input id="username" placeholder="Username NGL (tanpa @)" /><br />
-  <textarea id="message" placeholder="Isi pesan"></textarea><br />
-  <input id="jumlah" type="number" placeholder="Jumlah pesan" /><br />
-  <input id="delay" type="number" placeholder="Delay (1–60 detik)" /><br />
-  <button onclick="mulaiSpam()">Kirim Spam</button>
-
-  <div class="log-box" id="log">Log akan tampil di sini...</div>
-  <div class="notif" id="notifBox">Notifikasi</div>
+    <div id="log"></div>
+  </div>
 
   <script>
     function showNotif(text) {
-      const box = document.getElementById("notifBox");
-      box.innerText = text;
-      box.classList.add("show");
+      const notif = document.getElementById('notif');
+      notif.textContent = text;
+      notif.style.top = '30px';
+
       setTimeout(() => {
-        box.classList.remove("show");
-      }, 3000);
+        notif.style.top = '-50px';
+      }, 1600);
     }
 
-    async function mulaiSpam() {
-      const username = document.getElementById('username').value.trim();
-      const message = document.getElementById('message').value.trim();
+    async function kirim() {
+      const user = document.getElementById('username').value.trim();
+      const pesan = document.getElementById('message').value.trim();
       const jumlah = parseInt(document.getElementById('jumlah').value);
       const delay = parseInt(document.getElementById('delay').value * 1000);
-      const logBox = document.getElementById('log');
+      const log = document.getElementById('log');
+      log.innerHTML = '';
 
-      if (!username || !message || !jumlah || isNaN(delay)) {
-        showNotif("Isi semua kolom dengan benar!");
+      if (!user || !pesan || isNaN(jumlah) || isNaN(delay)) {
+        showNotif("Lengkapi semua data!");
         return;
       }
 
-      for (let i = 1; i <= jumlah; i++) {
-        showNotif(`Mengirim pesan ke-${i}`);
-        const res = await fetch('/api/send', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ username, message })
-        });
+      showNotif("Spam dimulai");
 
-        const data = await res.json();
-        if (data.success) {
-          logBox.innerHTML += `<div>pesan ke ${i} berhasil terkirim by villain</div>`;
-        } else {
-          logBox.innerHTML += `<div>pesan ke ${i} gagal: ${data.error}</div>`;
+      for (let i = 1; i <= jumlah; i++) {
+        try {
+          const res = await fetch('/api/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, message: pesan })
+          });
+
+          if (res.ok) {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.textContent = `pesan ke ${i} berhasil terkirim by villain`;
+            log.appendChild(div);
+          } else {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.textContent = `pesan ke ${i} gagal terkirim`;
+            log.appendChild(div);
+          }
+        } catch {
+          const div = document.createElement('div');
+          div.className = 'log-entry';
+          div.textContent = `pesan ke ${i} error`;
+          log.appendChild(div);
         }
 
-        if (i < jumlah) await new Promise(r => setTimeout(r, delay));
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
 
-      showNotif(`DONE! Kirim ke-${jumlah} selesai`);
-      logBox.innerHTML += `<div class="bold">done yang ke ${jumlah} sudah berhasil terkirim ya 😋</div>`;
+      showNotif("SPAM SELESAI");
+      const done = document.createElement('div');
+      done.className = 'log-entry';
+      done.innerHTML = `<strong>done yang ke ${jumlah} sudah berhasil terkirim ya 😋</strong>`;
+      log.appendChild(done);
     }
   </script>
 </body>
