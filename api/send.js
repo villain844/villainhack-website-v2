@@ -1,45 +1,34 @@
+// api/send.js (gunakan di Vercel sebagai serverless function)
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Metode tidak diizinkan' });
+    return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
   const { username, message } = req.body;
 
   if (!username || !message) {
-    return res.status(400).json({ success: false, message: 'Username dan pesan tidak boleh kosong' });
+    return res.status(400).json({ success: false, error: 'Username dan pesan wajib diisi' });
   }
 
   try {
-    const payload = {
-      question: message,
-      deviceId: generateId(),
-      gameSlug: '',
-      language: 'id',
-    };
-
-    const response = await fetch(`https://ngl.link/api/submit?username=${username}`, {
-      method: 'POST',
+    const response = await fetch("https://ngl.link/api/submit", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify(payload),
+      body: new URLSearchParams({
+        username: username.replace(/^@/, ""),
+        question: message,
+        deviceId: "d3eb7d3e-a2d1-4fae-9f87-example" // bisa diganti bebas
+      }).toString()
     });
 
     if (!response.ok) {
-      throw new Error('Gagal mengirim ke ngl.link');
+      return res.status(500).json({ success: false, error: "Gagal mengirim ke server NGL" });
     }
 
-    return res.status(200).json({ success: true, message: 'Berhasil terkirim' });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengirim pesan' });
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
   }
-}
-
-function generateId() {
-  let id = '';
-  const chars = 'abcdef0123456789';
-  for (let i = 0; i < 16; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
 }
