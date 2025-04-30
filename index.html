@@ -3,117 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>𓆩villain host𓆪 NGL Spammer</title>
+  <title>𓆩villain host𓆪 | NGL Spammer</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
       background: url('https://files.catbox.moe/r7x7ab.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Arial, sans-serif;
-      color: white;
+      color: #fff;
       text-align: center;
     }
 
-    h1 {
-      margin-top: 30px;
-      color: red;
-      text-shadow: 0 0 10px red;
+    .container {
+      background-color: rgba(0, 0, 0, 0.7);
+      margin: 100px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px red;
     }
 
-    .container {
-      margin-top: 30px;
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
     }
 
     input, textarea {
-      width: 90%;
-      max-width: 400px;
-      padding: 10px;
-      margin: 10px auto;
-      border: 2px solid lime;
-      border-radius: 5px;
-      background: rgba(0, 0, 0, 0.6);
+      background: #222;
       color: white;
-      display: block;
     }
 
-    #sendButton {
-      padding: 10px 20px;
-      font-weight: bold;
+    button {
       background-color: red;
       color: white;
-      border: none;
-      border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
       box-shadow: 0 0 10px red;
     }
 
-    #statusBox {
-      width: 90%;
-      max-width: 400px;
-      min-height: 100px;
-      margin: 20px auto;
-      border: 2px solid lime;
+    .status-box {
+      margin-top: 20px;
+      background-color: rgba(255, 0, 0, 0.1);
+      border: 2px solid red;
+      border-radius: 10px;
       padding: 10px;
       text-align: left;
-      background-color: rgba(0, 0, 0, 0.7);
+      height: 150px;
       overflow-y: auto;
-      max-height: 250px;
+      font-size: 14px;
     }
 
-    .done {
-      font-weight: bold;
-      color: #ff4444;
+    b {
+      color: red;
     }
   </style>
 </head>
 <body>
-  <h1>𓆩villain host𓆪 NGL Spammer</h1>
   <div class="container">
-    <input type="text" id="username" placeholder="Username NGL (@...)" />
-    <textarea id="message" placeholder="Pesan spam..."></textarea>
-    <input type="number" id="count" min="1" max="50" placeholder="Jumlah pesan (1–50)" />
-    <input type="number" id="delay" min="1" max="60" placeholder="Delay (1-60 detik)" />
-    <button id="sendButton">Kirim Spam</button>
-
-    <div id="statusBox"></div>
+    <h1>𓆩villain host𓆪</h1>
+    <p>NGL Spammer</p>
+    <input type="text" id="username" placeholder="Username NGL (tanpa @)">
+    <textarea id="message" placeholder="Pesan kamu..."></textarea>
+    <input type="number" id="amount" placeholder="Jumlah pesan (1-10)" min="1" max="10">
+    <input type="number" id="delay" placeholder="Delay antar pesan (1-60 detik)" min="1" max="60">
+    <button onclick="startSpam()">Kirim Sekarang</button>
+    <div class="status-box" id="status"></div>
   </div>
 
   <script>
-    const sendBtn = document.getElementById("sendButton");
-    const statusBox = document.getElementById("statusBox");
+    async function startSpam() {
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message').value;
+      const amount = parseInt(document.getElementById('amount').value);
+      const delay = parseInt(document.getElementById('delay').value);
+      const status = document.getElementById('status');
 
-    sendBtn.addEventListener("click", async () => {
-      const username = document.getElementById("username").value.trim();
-      const message = document.getElementById("message").value.trim();
-      const count = parseInt(document.getElementById("count").value);
-      const delay = parseInt(document.getElementById("delay").value) * 1000;
-
-      if (!username || !message || isNaN(count) || isNaN(delay)) {
-        alert("Semua kolom wajib diisi!");
+      if (!username || !message || !amount || !delay) {
+        status.innerHTML = "<b>Semua kolom harus diisi!</b>";
         return;
       }
 
-      statusBox.innerHTML = "";
-
-      for (let i = 1; i <= count; i++) {
-        const res = await fetch("/api/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, message }),
+      status.innerHTML = '';
+      for (let i = 1; i <= amount; i++) {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, message })
         });
 
-        if (res.ok) {
-          statusBox.innerHTML += `Pesan ke ${i} berhasil terkirim by villain<br>`;
+        const data = await res.json();
+        if (data.success) {
+          status.innerHTML += `<div>Pesan ke ${i} berhasil terkirim by villain</div>`;
         } else {
-          statusBox.innerHTML += `Pesan ke ${i} gagal dikirim<br>`;
+          status.innerHTML += `<div>Pesan ke ${i} gagal: ${data.error}</div>`;
         }
 
-        if (i < count) await new Promise(r => setTimeout(r, delay));
+        await new Promise(resolve => setTimeout(resolve, delay * 1000));
       }
 
-      statusBox.innerHTML += `<br><span class='done'>Done! Yang ke ${count} sudah berhasil terkirim ya 😋</span>`;
-    });
+      status.innerHTML += `<div><b>Done! Yang ke ${amount} sudah berhasil terkirim ya</b></div>`;
+    }
   </script>
 </body>
 </html>
