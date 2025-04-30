@@ -1,34 +1,39 @@
-// api/send.js (gunakan di Vercel sebagai serverless function)
+// public/api/send.js
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, error: 'Method not allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).end('Method not allowed');
 
   const { username, message } = req.body;
 
   if (!username || !message) {
-    return res.status(400).json({ success: false, error: 'Username dan pesan wajib diisi' });
+    return res.status(400).json({ error: 'Username and message are required' });
   }
 
   try {
-    const response = await fetch("https://ngl.link/api/submit", {
-      method: "POST",
+    const response = await fetch(`https://ngl.link/api/submit`, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'Mozilla/5.0'
       },
       body: new URLSearchParams({
-        username: username.replace(/^@/, ""),
+        username: username,
         question: message,
-        deviceId: "d3eb7d3e-a2d1-4fae-9f87-example" // bisa diganti bebas
+        deviceId: 'aaaa', // Static value, can be randomized
+        gameSlug: '',
+        referrer: ''
       }).toString()
     });
 
-    if (!response.ok) {
-      return res.status(500).json({ success: false, error: "Gagal mengirim ke server NGL" });
+    const data = await response.json();
+
+    if (data.success) {
+      return res.status(200).json({ success: true, message: 'Pesan berhasil dikirim!' });
+    } else {
+      return res.status(500).json({ error: 'Gagal mengirim pesan' });
     }
 
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+  } catch (error) {
+    return res.status(500).json({ error: 'Terjadi kesalahan saat menghubungi NGL' });
   }
-}
+                                 }
