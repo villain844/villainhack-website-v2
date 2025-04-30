@@ -49,6 +49,24 @@
       color: #fff;
       cursor: pointer;
     }
+
+    .notif {
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ff0000;
+      z-index: 9999;
+      transition: top 0.5s ease;
+    }
+
+    .notif.show {
+      top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -61,8 +79,18 @@
   <button onclick="mulaiSpam()">Kirim Spam</button>
 
   <div class="log-box" id="log">Log akan tampil di sini...</div>
+  <div class="notif" id="notifBox">Notifikasi</div>
 
   <script>
+    function showNotif(text) {
+      const box = document.getElementById("notifBox");
+      box.innerText = text;
+      box.classList.add("show");
+      setTimeout(() => {
+        box.classList.remove("show");
+      }, 3000);
+    }
+
     async function mulaiSpam() {
       const username = document.getElementById('username').value.trim();
       const message = document.getElementById('message').value.trim();
@@ -71,11 +99,12 @@
       const logBox = document.getElementById('log');
 
       if (!username || !message || !jumlah || isNaN(delay)) {
-        alert("Isi semua kolom!");
+        showNotif("Isi semua kolom dengan benar!");
         return;
       }
 
       for (let i = 1; i <= jumlah; i++) {
+        showNotif(`Mengirim pesan ke-${i}`);
         const res = await fetch('/api/send', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -92,6 +121,7 @@
         if (i < jumlah) await new Promise(r => setTimeout(r, delay));
       }
 
+      showNotif(`DONE! Kirim ke-${jumlah} selesai`);
       logBox.innerHTML += `<div class="bold">done yang ke ${jumlah} sudah berhasil terkirim ya 😋</div>`;
     }
   </script>
