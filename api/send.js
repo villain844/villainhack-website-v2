@@ -1,37 +1,66 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Metode tidak diizinkan' });
+const sendSpam = async () => {
+  const username = document.getElementById("username").value.trim();
+  const message = document.getElementById("message").value.trim();
+  const amount = parseInt(document.getElementById("amount").value.trim());
+  const logBox = document.getElementById("log");
+
+  if (!username || !message || isNaN(amount) || amount <= 0) {
+    showNotification("Isi semua kolom dengan benar!", "error");
+    return;
   }
 
-  const { username, message } = req.body;
+  logBox.innerHTML = "";
+  showNotification("Spam dimulai", "start");
 
-  if (!username || !message) {
-    return res.status(400).json({ error: 'Username dan pesan diperlukan' });
-  }
+  let successCount = 0;
 
-  try {
-    const response = await fetch(`https://ngl.link/api/submit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        username,
-        question: message,
-        deviceId: 'aaaaaaaaaaaaaaaa', // ID statis agar tetap bisa kirim
-        gameSlug: '',
-        referrer: ''
-      })
-    });
+  for (let i = 1; i <= amount; i++) {
+    try {
+      const res = await fetch("https://ngl.link/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `username=${username}&question=${encodeURIComponent(message)}&deviceId=${generateId()}`
+      });
 
-    const data = await response.json();
-
-    if (data && data.success) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(500).json({ success: false, error: 'Gagal mengirim pesan' });
+      if (res.ok) {
+        successCount++;
+        logBox.innerHTML += `<p>Pesan ke ${i} berhasil terkirim by 𓆩villain host𓆪</p>`;
+      } else {
+        logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim</p>`;
+      }
+    } catch (error) {
+      logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim</p>`;
     }
-  } catch (error) {
-    res.status(500).json({ success: false, error: 'Terjadi kesalahan' });
+
+    await new Promise(resolve => setTimeout(resolve, 500));
   }
-}
+
+  showNotification(`**Spam selesai** (${successCount}/${amount})`, "done");
+};
+
+const generateId = () => {
+  const chars = "abcdef1234567890";
+  let id = "";
+  for (let i = 0; i < 32; i++) {
+    id += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return id;
+};
+
+const showNotification = (message, type) => {
+  const notif = document.createElement("div");
+  notif.className = `notif ${type}`;
+  notif.innerHTML = message;
+  document.body.appendChild(notif);
+
+  setTimeout(() => {
+    notif.style.top = "30px";
+  }, 50);
+
+  setTimeout(() => {
+    notif.style.top = "-100px";
+    setTimeout(() => notif.remove(), 400);
+  }, 1600);
+};
