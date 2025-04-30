@@ -61,6 +61,25 @@
     b {
       color: red;
     }
+
+    .toast {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px red;
+      font-weight: bold;
+      transition: top 0.5s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -75,7 +94,18 @@
     <div class="status-box" id="status"></div>
   </div>
 
+  <div class="toast" id="toast">Memulai spam...</div>
+
   <script>
+    function showToast(text) {
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
     async function startSpam() {
       const username = document.getElementById('username').value;
       const message = document.getElementById('message').value;
@@ -84,11 +114,13 @@
       const status = document.getElementById('status');
 
       if (!username || !message || !amount || !delay) {
-        status.innerHTML = "<b>Semua kolom harus diisi!</b>";
+        showToast("Semua kolom harus diisi!");
         return;
       }
 
       status.innerHTML = '';
+      showToast("Memulai spam...");
+
       for (let i = 1; i <= amount; i++) {
         const res = await fetch('/api/send', {
           method: 'POST',
@@ -106,6 +138,7 @@
         await new Promise(resolve => setTimeout(resolve, delay * 1000));
       }
 
+      showToast("Spam selesai!");
       status.innerHTML += `<div><b>Done! Yang ke ${amount} sudah berhasil terkirim ya</b></div>`;
     }
   </script>
