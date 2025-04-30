@@ -2,125 +2,118 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Villain Host - NGL Spammer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>𓆩villain host𓆪 NGL Spammer</title>
   <style>
     body {
-      background-color: #000;
-      color: #0f0;
-      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      background: url('https://files.catbox.moe/r7x7ab.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
       text-align: center;
-      padding: 30px;
     }
-    input, textarea, button {
-      margin: 10px;
-      padding: 10px;
-      width: 80%;
-      font-size: 16px;
-      border: 2px solid #0f0;
-      background-color: #000;
-      color: #0f0;
-      border-radius: 5px;
-      box-shadow: 0 0 8px #0f0;
+
+    h1 {
+      margin-top: 30px;
+      color: red;
+      text-shadow: 0 0 10px red;
     }
-    button {
-      background-color: #0f0;
-      color: #000;
-      font-weight: bold;
-      box-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+
+    .container {
+      margin-top: 30px;
     }
-    .glitch {
-      font-size: 30px;
-      font-weight: bold;
-      animation: glitch 1s infinite;
-    }
-    @keyframes glitch {
-      0% { text-shadow: 1px 0 red; }
-      25% { text-shadow: -1px 0 blue; }
-      50% { text-shadow: 1px 0 green; }
-      75% { text-shadow: -1px 0 purple; }
-      100% { text-shadow: 0 0 white; }
-    }
-    #logBox {
-      background-color: #111;
-      color: #0f0;
-      margin-top: 20px;
-      padding: 15px;
+
+    input, textarea {
       width: 90%;
-      max-height: 300px;
-      overflow-y: auto;
-      text-align: left;
-      border: 2px solid #0f0;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #0f0;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px auto;
+      border: 2px solid lime;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      display: block;
     }
+
+    #sendButton {
+      padding: 10px 20px;
+      font-weight: bold;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px red;
+    }
+
+    #statusBox {
+      width: 90%;
+      max-width: 400px;
+      min-height: 100px;
+      margin: 20px auto;
+      border: 2px solid lime;
+      padding: 10px;
+      text-align: left;
+      background-color: rgba(0, 0, 0, 0.7);
+      overflow-y: auto;
+      max-height: 250px;
+    }
+
     .done {
       font-weight: bold;
+      color: #ff4444;
     }
   </style>
 </head>
 <body>
-  <h1>SELAMAT DATANG DI</h1>
-  <div class="glitch">𓆩⟬villain host⟭𓆪</div>
-  <h2>NGL Spammer Anonim</h2>
+  <h1>𓆩villain host𓆪 NGL Spammer</h1>
+  <div class="container">
+    <input type="text" id="username" placeholder="Username NGL (@...)" />
+    <textarea id="message" placeholder="Pesan spam..."></textarea>
+    <input type="number" id="count" min="1" max="50" placeholder="Jumlah pesan (1–50)" />
+    <input type="number" id="delay" min="1" max="60" placeholder="Delay (1-60 detik)" />
+    <button id="sendButton">Kirim Spam</button>
 
-  <input type="text" id="username" placeholder="Username NGL (tanpa @)">
-  <textarea id="message" rows="4" placeholder="Tulis pesan anonim..."></textarea>
-  <input type="number" id="jumlah" placeholder="Jumlah kirim? (1–20)" min="1" max="20">
-  <input type="number" id="delay" placeholder="Delay antar pesan (1–60 detik)" min="1" max="60">
-  <br>
-  <button onclick="kirimPesan()">Mulai Kirim</button>
-  <p id="status"></p>
-
-  <div id="logBox"></div>
+    <div id="statusBox"></div>
+  </div>
 
   <script>
-    async function kirimPesan() {
-      const username = document.getElementById('username').value.trim();
-      const pesan = document.getElementById('message').value.trim();
-      const jumlah = parseInt(document.getElementById('jumlah').value);
-      const delayDetik = parseInt(document.getElementById('delay').value);
-      const status = document.getElementById('status');
-      const logBox = document.getElementById('logBox');
+    const sendBtn = document.getElementById("sendButton");
+    const statusBox = document.getElementById("statusBox");
 
-      if (!username || !pesan || isNaN(jumlah) || jumlah < 1 || jumlah > 20 || isNaN(delayDetik) || delayDetik < 1 || delayDetik > 60) {
-        status.textContent = "Harap isi semua kolom dengan benar!";
+    sendBtn.addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const count = parseInt(document.getElementById("count").value);
+      const delay = parseInt(document.getElementById("delay").value) * 1000;
+
+      if (!username || !message || isNaN(count) || isNaN(delay)) {
+        alert("Semua kolom wajib diisi!");
         return;
       }
 
-      const delay = delayDetik * 1000; // ubah ke milidetik
+      statusBox.innerHTML = "";
 
-      status.textContent = "Mengirim pesan...";
-      logBox.innerHTML = "";
+      for (let i = 1; i <= count; i++) {
+        const res = await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, message }),
+        });
 
-      for (let i = 1; i <= jumlah; i++) {
-        try {
-          await fetch('/api/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, message: pesan })
-          });
-
-          const logLine = document.createElement('div');
-          logLine.textContent = `pesan ke ${i} berhasil terkirim by villain`;
-          logBox.appendChild(logLine);
-          logBox.scrollTop = logBox.scrollHeight;
-
-          await new Promise(resolve => setTimeout(resolve, delay));
-        } catch (err) {
-          status.textContent = `Gagal mengirim pesan ke @${username}`;
-          return;
+        if (res.ok) {
+          statusBox.innerHTML += `Pesan ke ${i} berhasil terkirim by villain<br>`;
+        } else {
+          statusBox.innerHTML += `Pesan ke ${i} gagal dikirim<br>`;
         }
+
+        if (i < count) await new Promise(r => setTimeout(r, delay));
       }
 
-      const doneLine = document.createElement('div');
-      doneLine.innerHTML = `<span class="done">done yang ke ${jumlah} sudah berhasil terkirim ya 😋</span>`;
-      logBox.appendChild(doneLine);
-      logBox.scrollTop = logBox.scrollHeight;
-      status.textContent = "Selesai!";
-    }
+      statusBox.innerHTML += `<br><span class='done'>Done! Yang ke ${count} sudah berhasil terkirim ya 😋</span>`;
+    });
   </script>
 </body>
 </html>
