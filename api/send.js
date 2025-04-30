@@ -24,20 +24,23 @@ const sendSpam = async () => {
         body: `username=${username}&question=${encodeURIComponent(message)}&deviceId=${generateId()}`
       });
 
-      if (res.ok) {
+      const resText = await res.text();
+
+      if (resText.includes("sent") || resText.includes("true")) {
         successCount++;
         logBox.innerHTML += `<p>Pesan ke ${i} berhasil terkirim by 𓆩villain host𓆪</p>`;
       } else {
         logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim</p>`;
       }
+
     } catch (error) {
-      logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim</p>`;
+      logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim (error)</p>`;
     }
 
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 
-  showNotification(`**Spam selesai** (${successCount}/${amount})`, "done");
+  showNotification(`<strong>Spam selesai</strong> (${successCount}/${amount})`, "done");
 };
 
 const generateId = () => {
