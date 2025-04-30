@@ -1,69 +1,51 @@
-const sendSpam = async () => {
-  const username = document.getElementById("username").value.trim();
-  const message = document.getElementById("message").value.trim();
-  const amount = parseInt(document.getElementById("amount").value.trim());
-  const logBox = document.getElementById("log");
+function tampilkanNotifikasi(text) {
+  const notif = document.getElementById('notifikasi');
+  notif.innerText = text;
+  notif.style.top = '30px';
+  setTimeout(() => {
+    notif.style.top = '-50px';
+  }, 1600);
+}
 
-  if (!username || !message || isNaN(amount) || amount <= 0) {
-    showNotification("Isi semua kolom dengan benar!", "error");
+async function mulaiSpam() {
+  const username = document.getElementById("username").value;
+  const pesan = document.getElementById("pesan").value;
+  const log = document.getElementById("log");
+
+  if (!username || !pesan) {
+    tampilkanNotifikasi("Isi semua kolom dulu!");
     return;
   }
 
-  logBox.innerHTML = "";
-  showNotification("Spam dimulai", "start");
+  tampilkanNotifikasi("Spam dimulai");
 
-  let successCount = 0;
-
-  for (let i = 1; i <= amount; i++) {
+  for (let i = 1; i <= 10; i++) {
     try {
-      const res = await fetch("https://ngl.link/api/submit", {
+      const res = await fetch(`https://ngl.link/api/submit`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: `username=${username}&question=${encodeURIComponent(message)}&deviceId=${generateId()}`
+        body: JSON.stringify({
+          username: username,
+          question: pesan,
+          deviceId: "xxxxxxxxxxxxxx"
+        }),
       });
 
-      const resText = await res.text();
+      const text = await res.text();
 
-      if (resText.includes("sent") || resText.includes("true")) {
-        successCount++;
-        logBox.innerHTML += `<p>Pesan ke ${i} berhasil terkirim by 𓆩villain host𓆪</p>`;
+      if (text.includes("ok")) {
+        log.innerHTML += `<div>Pesan ke ${i} berhasil dikirim by villain</div>`;
       } else {
-        logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim</p>`;
+        log.innerHTML += `<div style="color:red">Pesan ke ${i} gagal dikirim</div>`;
       }
-
-    } catch (error) {
-      logBox.innerHTML += `<p style="color:red;">Pesan ke ${i} gagal dikirim (error)</p>`;
+    } catch (e) {
+      log.innerHTML += `<div style="color:red">Error jaringan saat kirim pesan ke ${i}</div>`;
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(r => setTimeout(r, 500)); // Delay 0.5 detik
   }
 
-  showNotification(`<strong>Spam selesai</strong> (${successCount}/${amount})`, "done");
-};
-
-const generateId = () => {
-  const chars = "abcdef1234567890";
-  let id = "";
-  for (let i = 0; i < 32; i++) {
-    id += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return id;
-};
-
-const showNotification = (message, type) => {
-  const notif = document.createElement("div");
-  notif.className = `notif ${type}`;
-  notif.innerHTML = message;
-  document.body.appendChild(notif);
-
-  setTimeout(() => {
-    notif.style.top = "30px";
-  }, 50);
-
-  setTimeout(() => {
-    notif.style.top = "-100px";
-    setTimeout(() => notif.remove(), 400);
-  }, 1600);
-};
+  tampilkanNotifikasi("**Spam selesai**");
+}
