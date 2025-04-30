@@ -3,143 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>𓆩villain host𓆪 | NGL Spammer</title>
+  <title>𓆩villain host𓆪 Spam</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
       background: url('https://files.catbox.moe/r7x7ab.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
+      font-family: sans-serif;
       text-align: center;
     }
 
-    .container {
-      background-color: rgba(0, 0, 0, 0.7);
-      margin: 100px auto;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px red;
+    h1 {
+      margin-top: 30px;
+      text-shadow: 0 0 10px red;
+      color: #ff4d4d;
     }
 
     input, textarea, button {
-      width: 100%;
+      margin: 10px;
       padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
+      border-radius: 5px;
       border: none;
-      border-radius: 10px;
+      width: 90%;
+      max-width: 300px;
     }
 
-    input, textarea {
-      background: #222;
-      color: white;
-    }
-
-    button {
-      background-color: red;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 0 10px red;
-    }
-
-    .status-box {
-      margin-top: 20px;
-      background-color: rgba(255, 0, 0, 0.1);
+    .log-box {
       border: 2px solid red;
       border-radius: 10px;
+      margin: 20px auto;
       padding: 10px;
+      max-width: 90%;
+      background: rgba(0,0,0,0.5);
       text-align: left;
-      height: 150px;
-      overflow-y: auto;
+      color: #fff;
       font-size: 14px;
     }
 
-    b {
-      color: red;
-    }
-
-    .toast {
-      position: fixed;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: red;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px red;
+    .bold {
       font-weight: bold;
-      transition: top 0.5s ease;
-      z-index: 999;
     }
 
-    .toast.show {
-      top: 30px;
+    button {
+      background-color: #b30000;
+      color: #fff;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>𓆩villain host𓆪</h1>
-    <p>NGL Spammer</p>
-    <input type="text" id="username" placeholder="Username NGL (tanpa @)">
-    <textarea id="message" placeholder="Pesan kamu..."></textarea>
-    <input type="number" id="amount" placeholder="Jumlah pesan (1-10)" min="1" max="10">
-    <input type="number" id="delay" placeholder="Delay antar pesan (1-60 detik)" min="1" max="60">
-    <button onclick="startSpam()">Kirim Sekarang</button>
-    <div class="status-box" id="status"></div>
-  </div>
+  <h1>𓆩villain host𓆪 NGL SPAM</h1>
 
-  <div class="toast" id="toast">Memulai spam...</div>
+  <input id="username" placeholder="Username NGL (tanpa @)" /><br />
+  <textarea id="message" placeholder="Isi pesan"></textarea><br />
+  <input id="jumlah" type="number" placeholder="Jumlah pesan" /><br />
+  <input id="delay" type="number" placeholder="Delay (1–60 detik)" /><br />
+  <button onclick="mulaiSpam()">Kirim Spam</button>
+
+  <div class="log-box" id="log">Log akan tampil di sini...</div>
 
   <script>
-    function showToast(text) {
-      const toast = document.getElementById("toast");
-      toast.textContent = text;
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000);
-    }
+    async function mulaiSpam() {
+      const username = document.getElementById('username').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const jumlah = parseInt(document.getElementById('jumlah').value);
+      const delay = parseInt(document.getElementById('delay').value * 1000);
+      const logBox = document.getElementById('log');
 
-    async function startSpam() {
-      const username = document.getElementById('username').value;
-      const message = document.getElementById('message').value;
-      const amount = parseInt(document.getElementById('amount').value);
-      const delay = parseInt(document.getElementById('delay').value);
-      const status = document.getElementById('status');
-
-      if (!username || !message || !amount || !delay) {
-        showToast("Semua kolom harus diisi!");
+      if (!username || !message || !jumlah || isNaN(delay)) {
+        alert("Isi semua kolom!");
         return;
       }
 
-      status.innerHTML = '';
-      showToast("Memulai spam...");
-
-      for (let i = 1; i <= amount; i++) {
+      for (let i = 1; i <= jumlah; i++) {
         const res = await fetch('/api/send', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ username, message })
         });
 
         const data = await res.json();
         if (data.success) {
-          status.innerHTML += `<div>Pesan ke ${i} berhasil terkirim by villain</div>`;
+          logBox.innerHTML += `<div>pesan ke ${i} berhasil terkirim by villain</div>`;
         } else {
-          status.innerHTML += `<div>Pesan ke ${i} gagal: ${data.error}</div>`;
+          logBox.innerHTML += `<div>pesan ke ${i} gagal: ${data.error}</div>`;
         }
 
-        await new Promise(resolve => setTimeout(resolve, delay * 1000));
+        if (i < jumlah) await new Promise(r => setTimeout(r, delay));
       }
 
-      showToast("Spam selesai!");
-      status.innerHTML += `<div><b>Done! Yang ke ${amount} sudah berhasil terkirim ya</b></div>`;
+      logBox.innerHTML += `<div class="bold">done yang ke ${jumlah} sudah berhasil terkirim ya 😋</div>`;
     }
   </script>
 </body>
