@@ -1,40 +1,37 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Metode tidak diizinkan' });
   }
 
   const { username, message } = req.body;
 
   if (!username || !message) {
-    return res.status(400).json({ success: false, error: 'Username dan pesan wajib diisi.' });
+    return res.status(400).json({ error: 'Username dan pesan diperlukan' });
   }
 
   try {
-    const payload = {
-      question: message,
-      deviceId: "unique-device-id",
-      gameSlug: "",
-      referrer: ""
-    };
-
     const response = await fetch(`https://ngl.link/api/submit`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        ...payload,
-        username: username
+      body: new URLSearchParams({
+        username,
+        question: message,
+        deviceId: 'aaaaaaaaaaaaaaaa', // ID statis agar tetap bisa kirim
+        gameSlug: '',
+        referrer: ''
       })
     });
 
-    if (!response.ok) {
-      return res.status(500).json({ success: false, error: 'Gagal mengirim pesan ke NGL.' });
-    }
+    const data = await response.json();
 
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    return res.status(500).json({ success: false, error: 'Terjadi kesalahan server.' });
+    if (data && data.success) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(500).json({ success: false, error: 'Gagal mengirim pesan' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Terjadi kesalahan' });
   }
 }
